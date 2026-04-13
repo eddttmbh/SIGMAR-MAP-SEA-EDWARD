@@ -5,7 +5,7 @@
 <title>Peta Desa SEA</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- ================= LEAFLET CSS ================= -->
+<!--  LEAFLET CSS  -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet-search@3.0.6/dist/leaflet-search.min.css">
 
@@ -17,13 +17,13 @@ html, body {
     font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-/* ================= MAP ================= */
+/*  MAP  */
 #map {
     width: 100%;
     height: 100vh;
 }
 
-/* ================= INFO BUTTON (KANAN TENGAH) ================= */
+/*  INFO BUTTON (KANAN TENGAH)  */
 .info-btn {
     position: absolute;
     right: 14px;
@@ -41,7 +41,19 @@ html, body {
     box-shadow: 0 4px 14px rgba(0,0,0,0.35);
 }
 
-/* ================= POPUP OVERLAY ================= */
+/*  COORD BOX  */
+.coord-box {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: rgba(255,255,255,0.9);
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    z-index: 1000;
+}
+
+/*  POPUP OVERLAY  */
 #infoPopup {
     position: fixed;
     inset: 0;
@@ -52,7 +64,7 @@ html, body {
     z-index: 9999;
 }
 
-/* ================= POPUP CONTENT ================= */
+/*  POPUP CONTENT  */
 .popup-content {
     width: 360px;
     padding: 22px;
@@ -94,7 +106,7 @@ html, body {
     border-bottom: none;
 }
 
-/* ================= CLOSE BUTTON ================= */
+/*  CLOSE BUTTON  */
 .popup-close {
     margin-top: 16px;
     width: 100%;
@@ -111,39 +123,72 @@ html, body {
     background: #c8e6c9;
 }
 
-/* ================= ANIMATION ================= */
+/*  ANIMATION  */
 @keyframes popupFade {
     from { transform: scale(0.9); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
 }
 
-/* ================= LEGEND ================= */
-.info.legend {
-    background: white;
-    padding: 8px;
-    font-size: 12px;
-    line-height: 18px;
-}
-
-.info.legend i {
-    width: 18px;
-    height: 18px;
-    float: left;
-    margin-right: 8px;
-    opacity: 0.8;
-}
 </style>
 </head>
 
 <body>
 
-<!-- ================= MAP ================= -->
+<!-- JUDUL MAP  -->
+<div style="
+    position:absolute;
+    top:12px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:1000;
+    padding:10px 24px;
+    background:rgba(27,94,32,0.95);
+    color:#fff;
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:0.5px;
+    border-radius:30px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.35);
+    backdrop-filter:blur(4px);
+    text-align:center;
+    pointer-events:none;
+">
+    Peta Administrasi Desa Sea<br>
+    <span style="
+        font-size:12px;
+        font-weight:400;
+        opacity:0.9;
+    ">
+    </span>
+</div> 
+
+<!-- KOMPAS  -->
+<img
+    img src="gambar kompas.png" style="
+        position:absolute;
+        top:120px;
+        left:12px;
+        z-index:1000;
+        width:56px;
+        height:56px;
+        background:white;
+        border-radius:50%;
+        padding:6px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.35);
+    ">
+</span>
+</img>
+
+<!--  MAP  -->
 <div id="map"></div>
 
-<!-- ================= INFO BUTTON ================= -->
+<!--  INFO BUTTON  -->
 <button class="info-btn" onclick="openInfo()">Info</button>
 
-<!-- ================= POPUP INFO ================= -->
+<!--  COORD PANEL  -->
+<div class="coord-box" id="coordBox">Lat, Lng</div>
+
+<!--  POPUP INFO  -->
 <div id="infoPopup">
     <div class="popup-content">
         <h3>Informasi Mahasiswa</h3>
@@ -156,16 +201,17 @@ html, body {
     </div>
 </div>
 
-<!-- ================= LIBRARY JS ================= -->
+<!--  LIBRARY JS  -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-hash@0.2.1/leaflet-hash.js"></script>
 <script src="https://unpkg.com/leaflet-search@3.0.6/dist/leaflet-search.min.js"></script>
 
-<!-- ================= DATA GEOJSON ================= -->
+<!--  DATA GEOJSON  -->
 <script src="PETADESASEA_1.js"></script>
 
 <script>
-/* ================= POPUP CONTROL ================= */
+    
+/*  POPUP CONTROL  */
 function openInfo() {
     document.getElementById('infoPopup').style.display = 'flex';
 }
@@ -173,7 +219,7 @@ function closeInfo() {
     document.getElementById('infoPopup').style.display = 'none';
 }
 
-/* ================= INIT MAP ================= */
+/*  INIT MAP  */
 var map = L.map('map', {
     zoomControl: false,
     maxZoom: 28,
@@ -186,7 +232,7 @@ var map = L.map('map', {
 new L.Hash(map);
 L.control.zoom({ position: 'topleft' }).addTo(map);
 
-/* ================= BASEMAP ================= */
+/*  BASEMAP  */
 var layer_OSM = L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     { maxZoom: 19 }
@@ -197,7 +243,16 @@ var layer_GoogleSatellite = L.tileLayer(
     { maxZoom: 28, maxNativeZoom: 20 }
 ).addTo(map);
 
-/* ================= COLOR FUNCTION ================= */
+/*  SCALE  */
+L.control.scale({ position: 'bottomleft' }).addTo(map);
+
+/*  COORD TRACK  */
+map.on('mousemove', e => {
+    document.getElementById("coordBox").innerText =
+        e.latlng.lat.toFixed(5) + ", " + e.latlng.lng.toFixed(5);
+});
+
+/*  COLOR FUNCTION  */
 function getColor(luas) {
     return luas > 1000 ? '#1b5e20' :
            luas > 500  ? '#388e3c' :
@@ -205,7 +260,7 @@ function getColor(luas) {
                          '#a5d6a7';
 }
 
-/* ================= POPUP DESA ================= */
+/*  POPUP DESA  */
 function popDesa(feature, layer) {
     layer.bindPopup(`
         <table>
@@ -225,7 +280,7 @@ function popDesa(feature, layer) {
     });
 }
 
-/* ================= STYLE ================= */
+/*  STYLE  */
 function styleDesa(feature) {
     return {
         color: '#1b5e20',
@@ -235,13 +290,13 @@ function styleDesa(feature) {
     };
 }
 
-/* ================= GEOJSON ================= */
+/*  GEOJSON  */
 var desaLayer = L.geoJSON(json_PETADESASEA_1, {
     style: styleDesa,
     onEachFeature: popDesa
 }).addTo(map);
 
-/* ================= LAYER CONTROL ================= */
+/*  LAYER CONTROL  */
 L.control.layers(
     {
         "Google Satellite": layer_GoogleSatellite,
@@ -252,7 +307,7 @@ L.control.layers(
     }
 ).addTo(map);
 
-/* ================= SEARCH ================= */
+/*  SEARCH  */
 L.control.search({
     layer: desaLayer,
     propertyName: 'NAMOBJ',
@@ -260,10 +315,10 @@ L.control.search({
     moveToLocation: latlng => map.setView(latlng, 16)
 }).addTo(map);
 
-/* ================= GEOLOCATION ================= */
+/*  GEOLOCATION  */
 map.locate({ setView: true, maxZoom: 16 });
 
-/* ================= LEGEND ================= */
+/*  LEGEND  */
 var legend = L.control({ position: 'bottomright' });
 legend.onAdd = function () {
     var div = L.DomUtil.create('div', 'info legend');
